@@ -3,16 +3,16 @@ package com.example.lotto
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.cardview.widget.CardView
 import java.util.*
-import java.util.Random
-import kotlin.collections.ArrayList
+
 
 fun getRandomLottoNumber ():Int{
     return Random().nextInt(45)+1
 }
 
-fun getRandomLottoNumbers (): MutableList<Int> {
+/*fun getRandomLottoNumbers (): MutableList<Int> {
     val lottoNumbers = mutableListOf<Int>()
 
     while (true) {
@@ -36,41 +36,57 @@ fun getRandomLottoNumbers (): MutableList<Int> {
                 break
         }
     }
+        return lottoNumbers
+    }*/
+
+fun getRandomLottoNumbers(): MutableList<Int> {
+
+    val lottoNumbers = mutableListOf<Int>()
+
+    for (i in 1..6) {
+        var number = 0
+        do {
+            number = getRandomLottoNumber()
+        } while (lottoNumbers.contains(number))
+        lottoNumbers.add(number)
+    }
     return lottoNumbers
 }
 
-fun getsuffledLottoNumbers() : MutableList<Int>{
-    val list = mutableListOf<Int>()
+fun getShuffledLottoNumbers () : MutableList<Int>{
+    val lottoNumbers = mutableListOf<Int>()
 
-    for(number in 1..45){
-        list.add(number)
+    for (number in 1..45) {
+        lottoNumbers.add(number)
     }
-    list.shuffle()
+    lottoNumbers.shuffle()
 
-    return list.subList(0,6)
+    return lottoNumbers.subList(0, 6)
 }
 
-    class MainActivity : AppCompatActivity() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_main)
-
-            val RandomCard = findViewById<CardView>(R.id.cardview1)
-            val constellationCard = findViewById<CardView>(R.id.cardview2)
-            val nameCard = findViewById<CardView>(R.id.cardview3)
-            val shuffledNumbers = getsuffledLottoNumbers()
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
 
-            RandomCard.setOnClickListener {
-                val intent = Intent(this@MainActivity, ResultActivity::class.java)
-                intent.putIntegerArrayListExtra("result", ArrayList(getRandomLottoNumbers()))
-                startActivity(intent)
-            }
-            constellationCard.setOnClickListener {
-                startActivity(Intent(this, ConstallationActivity::class.java))
-            }
-            nameCard.setOnClickListener {
-                startActivity(Intent(this, NameActivity::class.java))
-            }
+        val randomCard = findViewById<CardView>(R.id.cardview1)
+        randomCard.setOnClickListener {
+            val intent = Intent(this, ResultActivity::class.java)
+            //intent.putIntegerArrayListExtra("result", ArrayList(getRandomLottoNumbers()))
+            intent.putIntegerArrayListExtra("result", ArrayList(getShuffledLottoNumbers()))
+            startActivity(intent)
+        }
+
+        val constellationCard = findViewById<CardView>(R.id.cardview2)
+        constellationCard.setOnClickListener {
+            startActivity(Intent(this@MainActivity, ConstellationActivity::class.java))
+
+        }
+
+        val nameCard = findViewById<CardView>(R.id.cardview3)
+        nameCard.setOnClickListener {
+            startActivity(Intent(this@MainActivity, NameActivity::class.java))
         }
     }
+}

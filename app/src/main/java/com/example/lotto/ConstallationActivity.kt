@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CalendarView
 import android.widget.DatePicker
 import android.widget.TextView
 import java.text.SimpleDateFormat
@@ -11,39 +12,53 @@ import java.time.Month
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ConstallationActivity : AppCompatActivity() {
+
+class ConstellationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_constallation)
 
-        val btnGoResult = findViewById<Button>(R.id.btnGoResult)
+        val btnGOResultConstell = findViewById<Button>(R.id.btnGo)
         val datePicker = findViewById<DatePicker>(R.id.datePicker)
         val txtConstell = findViewById<TextView>(R.id.txtConstell)
-        txtConstell.text = makeConstellationString(datePicker.month+1, datePicker.dayOfMonth)
+        txtConstell.text = makeConstellationString(datePicker.month, datePicker.dayOfMonth)
 
-        btnGoResult.setOnClickListener {
-            val intent =Intent(this, ResultActivity::class.java)
-            intent.putIntegerArrayListExtra("result", ArrayList(getsuffledLottoNumbersFromHash(txtConstell.text.toString())))
-            intent.putExtra("constellation", makeConstellationString(datePicker.month+1, datePicker.dayOfMonth))
+        btnGOResultConstell.setOnClickListener {
+            val intent = Intent(this, ResultActivity::class.java)
+            intent.putIntegerArrayListExtra("result", ArrayList(getShuffledLottoNumbersFromHash(txtConstell.text.toString())))
+            intent.putExtra("constellation", makeConstellationString(datePicker.month, datePicker.dayOfMonth))
             startActivity(intent)
         }
+        val calendar = Calendar.getInstance()
 
+        datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                object : CalendarView.OnDateChangeListener, DatePicker.OnDateChangedListener {
+                    override fun onSelectedDayChange(view: CalendarView, year: Int, month: Int, dayOfMonth: Int) {
+
+                    }
+
+                    override fun onDateChanged(view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+                        txtConstell.text = makeConstellationString(datePicker.month, datePicker.dayOfMonth)
+                    }
+                })
     }
 }
-fun getsuffledLottoNumbersFromHash(str:String) : MutableList<Int>{
+
+fun getShuffledLottoNumbersFromHash(str: String): MutableList<Int>{
     val list = mutableListOf<Int>()
-    for(number in 1..45){
+
+    for (number in 1..45){
         list.add(number)
     }
-    list.shuffle()
-    val targetString = SimpleDateFormat("yyy-MM-dd-HH-mm-ss-SS", Locale.KOREA).format(Date())+ str
+    val targetString = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA).format(Date()) + str
+
     list.shuffle(Random(targetString.hashCode().toLong()))
 
-    return list.subList(0,6)
+    return list.subList(0, 6)
 }
 
-private fun makeConstellationString(month: Int, dayofMonth: Int): String {
-    val target = "${month}${String.format("%02d", dayofMonth)}".toInt()
+private fun makeConstellationString(month: Int, dayOfMonth: Int): String {
+    val target = "${month + 1}${String.format("%02d", dayOfMonth)}".toInt()
     when (target) {
         in 101.. 119 -> return "염소자리"
         in 120.. 218 -> return "물병자리"
