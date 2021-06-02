@@ -39,6 +39,17 @@ fun getRandomLottoNumbers (): MutableList<Int> {
     return lottoNumbers
 }
 
+fun getsuffledLottoNumbers() : MutableList<Int>{
+    val list = mutableListOf<Int>()
+
+    for(number in 1..45){
+        list.add(number)
+    }
+    list.shuffle()
+
+    return list.subList(0,6)
+}
+
     class MainActivity : AppCompatActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -47,6 +58,7 @@ fun getRandomLottoNumbers (): MutableList<Int> {
             val RandomCard = findViewById<CardView>(R.id.cardview1)
             val constellationCard = findViewById<CardView>(R.id.cardview2)
             val nameCard = findViewById<CardView>(R.id.cardview3)
+            val shuffledNumbers = getsuffledLottoNumbers()
 
 
             RandomCard.setOnClickListener {

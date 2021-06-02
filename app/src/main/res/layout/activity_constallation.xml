@@ -30,7 +30,7 @@
         app:srcCompat="@drawable/constellation" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txtConstell"
         android:layout_width="249dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/imageViewConstall"
